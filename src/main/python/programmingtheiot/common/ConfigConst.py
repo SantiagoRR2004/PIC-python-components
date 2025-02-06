@@ -6,6 +6,11 @@
 #
 # Copyright (c) 2020 by Andrew D. King
 #
+import os
+
+# Get the actual path of the current folder
+directory = os.path.dirname(os.path.abspath(__file__))
+
 
 """
 Configuration and other constants for use when looking up
@@ -212,8 +217,12 @@ CDA_SYSTEM_PERF_MSG_RESOURCE = (
 # the directory structure for python-components
 
 # NOTE: You will need to update this!!
-DEFAULT_CONFIG_FILE_NAME = "../../../../../../../config/PiotConfig.props"
-DEFAULT_CRED_FILE_NAME = "../../../../../../../cred/PiotCred.props"
+DEFAULT_CONFIG_FILE_NAME = os.path.abspath(
+    os.path.join(directory, "../../../../../config/PiotConfig.props")
+)
+DEFAULT_CRED_FILE_NAME = os.path.abspath(
+    os.path.join(directory, "../../../../../cred/PiotCred.props")
+)
 
 TEST_GDA_DATA_PATH_KEY = "testGdaDataPath"
 TEST_CDA_DATA_PATH_KEY = "testCdaDataPath"
