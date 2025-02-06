@@ -1,7 +1,7 @@
 #####
-# 
+#
 # This class is part of the Programming the Internet of Things project.
-# 
+#
 # It is provided as a simple shell to guide the student and assist with
 # implementation for the Programming the Internet of Things exercises,
 # and designed to be modified by the student as needed.
@@ -23,23 +23,24 @@ from programmingtheiot.cda.sim.HumiditySensorSimTask import HumiditySensorSimTas
 from programmingtheiot.cda.sim.TemperatureSensorSimTask import TemperatureSensorSimTask
 from programmingtheiot.cda.sim.PressureSensorSimTask import PressureSensorSimTask
 
+
 class SensorAdapterManager(object):
-	"""
-	Shell representation of class for student implementation.
-	
-	"""
+    """
+    Shell representation of class for student implementation.
 
-	def __init__(self):
-		pass
+    """
 
-	def handleTelemetry(self):
-		pass
-		
-	def setDataMessageListener(self, listener: IDataMessageListener) -> bool:
-		pass
-	
-	def startManager(self):
-		pass
-		
-	def stopManager(self):
-		pass
+    def __init__(self):
+        pass
+
+    def handleTelemetry(self):
+        pass
+
+    def setDataMessageListener(self, listener: IDataMessageListener) -> bool:
+        pass
+
+    def startManager(self):
+        pass
+
+    def stopManager(self):
+        pass
