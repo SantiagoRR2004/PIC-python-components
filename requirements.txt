@@ -1,3 +1,6 @@
+# Import for formatting
+black
+
 # Imports for Chapter 02 and later
 apscheduler
 psutil
