@@ -4,5 +4,14 @@
       "*" // <-- Glob pattern to specify which files should trigger the task
       // In this case, all files will trigger the task
     ]
-  }
+  },
+  "python.testing.unittestArgs": [
+    "-v",
+    "-s",
+    ".",
+    "-p",
+    "*Test.py"
+  ],
+  "python.testing.pytestEnabled": false,
+  "python.testing.unittestEnabled": true
 }
