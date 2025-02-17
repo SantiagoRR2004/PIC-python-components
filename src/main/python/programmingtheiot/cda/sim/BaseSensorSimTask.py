@@ -29,7 +29,7 @@ class BaseSensorSimTask:
         self,
         name=ConfigConst.NOT_SET,
         typeID: int = ConfigConst.DEFAULT_SENSOR_TYPE,
-        dataSet=None,
+        dataSet: SensorDataSet = None,
         minVal: float = DEFAULT_MIN_VAL,
         maxVal: float = DEFAULT_MAX_VAL,
     ):
@@ -62,8 +62,8 @@ class BaseSensorSimTask:
             sensorVal = self.dataSet.getDataEntry(index=self.dataSetIndex)
             self.dataSetIndex = self.dataSetIndex + 1
 
-        if self.dataSetIndex >= self.dataSet.getDataEntryCount() - 1:
-            self.dataSetIndex = 0
+            if self.dataSetIndex >= self.dataSet.getDataEntryCount() - 1:
+                self.dataSetIndex = 0
 
         sensorData.setValue(sensorVal)
 
