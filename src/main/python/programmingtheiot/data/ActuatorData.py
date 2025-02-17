@@ -25,31 +25,54 @@ class ActuatorData(BaseIotData):
         d=None,
     ):
         super(ActuatorData, self).__init__(name=name, typeID=typeID, d=d)
-        pass
+
+        self.value = ConfigConst.DEFAULT_VAL
+        self.command = ConfigConst.DEFAULT_COMMAND
+        self.stateData = ""
+        self.isResponse = False
+
+    def __str__(self):
+        return (
+            "ActuatorData [command={}, stateData={}, value={}, isResponse={}]".format(
+                self.command,
+                self.stateData,
+                self.value,
+                self.isResponse,
+            )
+        )
 
     def getCommand(self) -> int:
-        pass
+        return self.command
 
     def getStateData(self) -> str:
-        pass
+        return self.stateData
 
     def getValue(self) -> float:
-        pass
+        return self.value
 
     def isResponseFlagEnabled(self) -> bool:
-        return False
+        return self.isResponse
 
-    def setCommand(self, command: int):
-        pass
+    def setCommand(self, command: int) -> None:
+        self.command = command
+        self.updateTimeStamp()
 
-    def setAsResponse(self):
-        pass
+    def setAsResponse(self) -> None:
+        self.isResponse = True
+        self.updateTimeStamp()
 
-    def setStateData(self, stateData: str):
-        pass
+    def setStateData(self, stateData: str) -> None:
+        if stateData:
+            self.stateData = stateData
+            self.updateTimeStamp()
 
-    def setValue(self, val: float):
-        pass
+    def setValue(self, val: float) -> None:
+        self.value = val
+        self.updateTimeStamp()
 
-    def _handleUpdateData(self, data):
-        pass
+    def _handleUpdateData(self, data) -> None:
+        if data and isinstance(data, ActuatorData):
+            self.command = data.getCommand()
+            self.stateData = data.getStateData()
+            self.value = data.getValue()
+            self.isResponse = data.isResponseFlagEnabled()
