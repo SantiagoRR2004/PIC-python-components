@@ -25,7 +25,11 @@ class SensorData(BaseIotData):
         d=None,
     ):
         super(SensorData, self).__init__(name=name, typeID=typeID, d=d)
-        pass
+
+        self.value = ConfigConst.DEFAULT_VAL
+
+    def __str__(self):
+        return "SensorData [value={}]".format(self.value)
 
     def getSensorType(self) -> int:
         """
@@ -36,10 +40,12 @@ class SensorData(BaseIotData):
         return self.sensorType
 
     def getValue(self) -> float:
-        pass
+        return self.value
 
-    def setValue(self, newVal: float):
-        pass
+    def setValue(self, newVal: float) -> None:
+        self.value = newVal
+        self.updateTimeStamp()
 
-    def _handleUpdateData(self, data):
-        pass
+    def _handleUpdateData(self, data) -> None:
+        if data and isinstance(data, SensorData):
+            self.value = data.getValue()
