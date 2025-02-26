@@ -170,10 +170,12 @@ SYSTEM_PERF_TYPE = 9000
 CPU_UTIL_TYPE = 9001
 DISK_UTIL_TYPE = 9002
 MEM_UTIL_TYPE = 9003
+NETIN_UTIL_TYPE = 9004
 
 CPU_UTIL_NAME = "DeviceCpuUtil"
 DISK_UTIL_NAME = "DeviceDiskUtil"
 MEM_UTIL_NAME = "DeviceMemUtil"
+NETIN_UTIL_NAME = "DeviceNetInUtil"
 
 #####
 # typical topic naming conventions
