@@ -18,6 +18,7 @@ from programmingtheiot.common.IDataMessageListener import IDataMessageListener
 
 from programmingtheiot.cda.system.SystemCpuUtilTask import SystemCpuUtilTask
 from programmingtheiot.cda.system.SystemMemUtilTask import SystemMemUtilTask
+from programmingtheiot.cda.system.SystemDiskUtilTask import SystemDiskUtilTask
 
 from programmingtheiot.data.SystemPerformanceData import SystemPerformanceData
 
@@ -60,15 +61,18 @@ class SystemPerformanceManager(object):
 
         self.cpuUtilTask = SystemCpuUtilTask()
         self.memUtilTask = SystemMemUtilTask()
+        self.diskUtilTask = SystemDiskUtilTask()
 
     def handleTelemetry(self):
         cpuUtilPct = self.cpuUtilTask.getTelemetryValue()
         memUtilPct = self.memUtilTask.getTelemetryValue()
+        diskUtilPct = self.diskUtilTask.getTelemetryValue()
 
         logging.debug(
-            "CPU utilization is %s percent, and memory utilization is %s percent.",
+            "CPU utilization is %s percent, memory utilization is %s percent and disk utilization is %s percent.",
             str(cpuUtilPct),
             str(memUtilPct),
+            str(diskUtilPct),
         )
 
     def setDataMessageListener(self, listener: IDataMessageListener) -> bool:
