@@ -10,6 +10,7 @@ numpy
 matplotlib
 sense-emu
 pisense
+PyGObject
 
 # Imports for Chapter 06 and later
 paho-mqtt<2.0.0
