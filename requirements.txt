@@ -5,6 +5,9 @@ black
 apscheduler
 psutil
 
+# Needed for pisense to make ImageDraw have textsize()
+Pillow<10.0.0
+
 # Imports for Chapter 03 and later
 numpy
 matplotlib
