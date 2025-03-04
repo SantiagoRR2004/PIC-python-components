@@ -5,11 +5,15 @@ black
 apscheduler
 psutil
 
+# Needed for pisense to make ImageDraw have textsize()
+Pillow<10.0.0
+
 # Imports for Chapter 03 and later
 numpy
 matplotlib
 sense-emu
 pisense
+PyGObject
 
 # Imports for Chapter 06 and later
 paho-mqtt<2.0.0
