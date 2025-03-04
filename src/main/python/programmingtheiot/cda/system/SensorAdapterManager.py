@@ -163,3 +163,25 @@ class SensorAdapterManager(object):
             self.humidityAdapter = HumiditySensorSimTask(dataSet=humidityData)
             self.pressureAdapter = PressureSensorSimTask(dataSet=pressureData)
             self.tempAdapter = TemperatureSensorSimTask(dataSet=tempData)
+
+        else:
+            heModule = import_module(
+                "programmingtheiot.cda.emulated.HumiditySensorEmulatorTask",
+                "HumiditySensorEmulatorTask",
+            )
+            heClazz = getattr(heModule, "HumiditySensorEmulatorTask")
+            self.humidityAdapter = heClazz()
+
+            peModule = import_module(
+                "programmingtheiot.cda.emulated.PressureSensorEmulatorTask",
+                "PressureSensorEmulatorTask",
+            )
+            peClazz = getattr(peModule, "PressureSensorEmulatorTask")
+            self.pressureAdapter = peClazz()
+
+            tempModule = import_module(
+                "programmingtheiot.cda.emulated.TemperatureSensorEmulatorTask",
+                "TemperatureSensorEmulatorTask",
+            )
+            teClazz = getattr(tempModule, "TemperatureSensorEmulatorTask")
+            self.tempAdapter = teClazz()
