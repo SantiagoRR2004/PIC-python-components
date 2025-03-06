@@ -42,10 +42,10 @@ class SystemPerformanceData(BaseIotData):
     def getMemoryUtilization(self) -> float:
         return self.memUtil
 
-    def getNetInUtilization(self) -> float:
+    def getNetInUtilization(self) -> int:
         return self.netInUtil
 
-    def getNetOutUtilization(self) -> float:
+    def getNetOutUtilization(self) -> int:
         return self.netOutUtil
 
     def setCpuUtilization(self, cpuUtil: float) -> None:
@@ -60,11 +60,11 @@ class SystemPerformanceData(BaseIotData):
         self.memUtil = memUtil
         self.updateTimeStamp()
 
-    def setNetInUtilization(self, netInUtil: float) -> None:
+    def setNetInUtilization(self, netInUtil: int) -> None:
         self.netInUtil = netInUtil
         self.updateTimeStamp()
 
-    def setNetOutUtilization(self, netOutUtil: float) -> None:
+    def setNetOutUtilization(self, netOutUtil: int) -> None:
         self.netOutUtil = netOutUtil
         self.updateTimeStamp()
 

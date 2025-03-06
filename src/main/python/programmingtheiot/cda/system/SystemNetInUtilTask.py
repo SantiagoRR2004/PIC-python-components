@@ -27,7 +27,7 @@ class SystemNetInUtilTask(BaseSystemUtilTask):
         )
         self.last = psutil.net_io_counters().bytes_recv
 
-    def getTelemetryValue(self) -> float:
+    def getTelemetryValue(self) -> int:
         """
         Get the telemetry value
 
