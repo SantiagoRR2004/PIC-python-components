@@ -125,7 +125,7 @@ class CoapClientConnectorTest(unittest.TestCase):
         Comment the annotation to test CON POST
         """
         data = SensorData()
-        jsonData = DataUtil().sensorDataToJson(data=data)
+        jsonData = DataUtil().sensorDataToJson(sensorData=data)
 
         self.coapClient.sendPostRequest(
             resource=ResourceNameEnum.CDA_SENSOR_MSG_RESOURCE,
@@ -140,7 +140,7 @@ class CoapClientConnectorTest(unittest.TestCase):
         Comment the annotation to test NON POST
         """
         data = SensorData()
-        jsonData = DataUtil().sensorDataToJson(data=data)
+        jsonData = DataUtil().sensorDataToJson(sensorData=data)
 
         self.coapClient.sendPostRequest(
             resource=ResourceNameEnum.CDA_SENSOR_MSG_RESOURCE,
@@ -155,7 +155,7 @@ class CoapClientConnectorTest(unittest.TestCase):
         Comment the annotation to test CON PUT
         """
         data = SensorData()
-        jsonData = DataUtil().sensorDataToJson(data=data)
+        jsonData = DataUtil().sensorDataToJson(sensorData=data)
 
         self.coapClient.sendPutRequest(
             resource=ResourceNameEnum.CDA_SENSOR_MSG_RESOURCE,
@@ -170,7 +170,7 @@ class CoapClientConnectorTest(unittest.TestCase):
         Comment the annotation to test NON PUT
         """
         data = SensorData()
-        jsonData = DataUtil().sensorDataToJson(data=data)
+        jsonData = DataUtil().sensorDataToJson(sensorData=data)
 
         self.coapClient.sendPutRequest(
             resource=ResourceNameEnum.CDA_SENSOR_MSG_RESOURCE,
