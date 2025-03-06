@@ -36,21 +36,36 @@ class SystemPerformanceData(BaseIotData):
     def getCpuUtilization(self) -> float:
         return self.cpuUtil
 
-    def getDiskUtilization(self):
-        pass
+    def getDiskUtilization(self) -> float:
+        return self.diskUtil
 
     def getMemoryUtilization(self) -> float:
         return self.memUtil
+
+    def getNetInUtilization(self) -> float:
+        return self.netInUtil
+
+    def getNetOutUtilization(self) -> float:
+        return self.netOutUtil
 
     def setCpuUtilization(self, cpuUtil: float) -> None:
         self.cpuUtil = cpuUtil
         self.updateTimeStamp()
 
-    def setDiskUtilization(self, diskUtil):
-        pass
+    def setDiskUtilization(self, diskUtil: float) -> None:
+        self.diskUtil = diskUtil
+        self.updateTimeStamp()
 
     def setMemoryUtilization(self, memUtil: float) -> None:
         self.memUtil = memUtil
+        self.updateTimeStamp()
+
+    def setNetInUtilization(self, netInUtil: float) -> None:
+        self.netInUtil = netInUtil
+        self.updateTimeStamp()
+
+    def setNetOutUtilization(self, netOutUtil: float) -> None:
+        self.netOutUtil = netOutUtil
         self.updateTimeStamp()
 
     def _handleUpdateData(self, data) -> None:
