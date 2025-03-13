@@ -329,3 +329,4 @@ INCLUDE_RAW_IMAGE_DATA_IN_MSG_KEY = "includeRawImageDataInMsg"
 
 # Redis
 DATA_GATEWAY_SERVICE = "Data.GatewayService"
+ENABLE_REDIS_KEY = "enableRedis"

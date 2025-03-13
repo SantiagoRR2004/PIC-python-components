@@ -11,6 +11,9 @@ import logging
 
 from programmingtheiot.cda.connection.CoapClientConnector import CoapClientConnector
 from programmingtheiot.cda.connection.MqttClientConnector import MqttClientConnector
+from programmingtheiot.cda.connection.RedisPersistenceAdapter import (
+    RedisPersistenceAdapter,
+)
 
 from programmingtheiot.cda.system.ActuatorAdapterManager import ActuatorAdapterManager
 from programmingtheiot.cda.system.SensorAdapterManager import SensorAdapterManager
@@ -52,12 +55,17 @@ class DeviceDataManager(IDataMessageListener):
             section=ConfigConst.CONSTRAINED_DEVICE, key=ConfigConst.ENABLE_SENSING_KEY
         )
 
+        self.enableRedis = self.configUtil.getBoolean(
+            section=ConfigConst.CLOUD_GATEWAY_SERVICE, key=ConfigConst.ENABLE_REDIS_KEY
+        )
+
         # NOTE: this can also be retrieved from the configuration file
         self.enableActuation = True
 
         self.sysPerfMgr = None
         self.sensorAdapterMgr = None
         self.actuatorAdapterMgr = None
+        self.redisClient = None
 
         # NOTE: The following aren't used until Part III but should be declared now
         self.mqttClient = None
@@ -77,6 +85,10 @@ class DeviceDataManager(IDataMessageListener):
         if self.enableActuation:
             self.actuatorAdapterMgr = ActuatorAdapterManager(dataMsgListener=self)
             logging.info("Local actuation capabilities enabled")
+
+        if self.enableRedis:
+            self.redisClient = RedisPersistenceAdapter()
+            logging.info("Redis persistence enabled")
 
         self.handleTempChangeOnDevice = self.configUtil.getBoolean(
             ConfigConst.CONSTRAINED_DEVICE, ConfigConst.HANDLE_TEMP_CHANGE_ON_DEVICE_KEY
@@ -192,6 +204,10 @@ class DeviceDataManager(IDataMessageListener):
             logging.debug(
                 "Incoming sensor data received (from sensor manager): " + str(data)
             )
+            if self.enableRedis:
+                self.redisClient.storeData(
+                    resource=ResourceNameEnum.CDA_SENSOR_MSG_RESOURCE, data=data
+                )
             self._handleSensorDataAnalysis(data)
             return True
         else:
@@ -238,6 +254,9 @@ class DeviceDataManager(IDataMessageListener):
         if self.sensorAdapterMgr:
             self.sensorAdapterMgr.startManager()
 
+        if self.redisClient:
+            self.redisClient.connectClient()
+
         logging.info("Started DeviceDataManager.")
 
     def stopManager(self):
@@ -248,6 +267,9 @@ class DeviceDataManager(IDataMessageListener):
 
         if self.sensorAdapterMgr:
             self.sensorAdapterMgr.stopManager()
+
+        if self.redisClient:
+            self.redisClient.disconnectClient()
 
         logging.info("Stopped DeviceDataManager.")
 
