@@ -76,12 +76,14 @@ class SystemPerformanceManager(object):
         netOutUtilVal = self.netOutUtilTask.getTelemetryValue()
 
         logging.debug(
-            "CPU utilization is %s percent, memory utilization is %s percent and disk utilization is %s percent.",
+            "CPU utilization is %s percent, memory utilization is %s percent and disk utilization is %s percent."
+            "\n%s bytes received since the last check."
+            "\n%s bytes sent since the last check.",
             str(cpuUtilPct),
             str(memUtilPct),
             str(diskUtilPct),
-            "%s bytes recieved since the last check." % str(netInUtilVal),
-            "%s bytes sent since the last check." % str(netOutUtilVal),
+            str(netInUtilVal),
+            str(netOutUtilVal),
         )
 
     def setDataMessageListener(self, listener: IDataMessageListener) -> bool:
