@@ -326,3 +326,6 @@ MAX_MOTION_FRAMES_BEFORE_ACTION_KEY = "maxMotionFramesBeforeAction"
 MAX_CACHED_FRAMES_KEY = "maxCachedFrames"
 STORE_INTERIM_FRAMES_KEY = "storeInterimFrames"
 INCLUDE_RAW_IMAGE_DATA_IN_MSG_KEY = "includeRawImageDataInMsg"
+
+# Redis
+DATA_GATEWAY_SERVICE = "Data.GatewayService"

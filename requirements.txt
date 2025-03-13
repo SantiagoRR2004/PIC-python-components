@@ -15,6 +15,9 @@ sense-emu
 pisense
 PyGObject
 
+# Imports for optional parts Chapter 5
+redis
+
 # Imports for Chapter 06 and later
 paho-mqtt<2.0.0
 
