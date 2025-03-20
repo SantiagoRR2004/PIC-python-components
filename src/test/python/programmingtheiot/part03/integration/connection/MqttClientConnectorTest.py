@@ -64,7 +64,6 @@ class MqttClientConnectorTest(unittest.TestCase):
 
         self.mcc.disconnectClient()
 
-    @unittest.skip("Ignore for now.")
     def testConnectAndCDAManagementStatusPubSub(self):
         qos = 1
         delay = self.cfg.getInteger(
