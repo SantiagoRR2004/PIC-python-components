@@ -112,8 +112,8 @@ class MqttClientConnector(IPubSubClient):
             logging.info("MQTT client connecting to broker at host: " + self.host)
             self.mqttClient.connect(self.host, self.port, self.keepAlive)
             self.mqttClient.loop_start()
-
             return True
+
         else:
             logging.warning(
                 "MQTT client is already connected. Ignoring connect request."
@@ -134,19 +134,26 @@ class MqttClientConnector(IPubSubClient):
             return False
 
     def onConnect(self, client, userdata, flags, rc):
-        pass
+        logging.info("MQTT client connected to broker: " + str(client))
 
     def onDisconnect(self, client, userdata, rc):
-        pass
+        logging.info("MQTT client disconnected from broker: " + str(client))
 
-    def onMessage(self, client, userdata, msg):
-        pass
+    def onMessage(self, client, userdata, msg: mqttClient.MQTTMessage):
+        payload = msg.payload
+
+        if payload:
+            logging.info(
+                "MQTT message received with payload: " + str(payload.decode("utf-8"))
+            )
+        else:
+            logging.info("MQTT message received with no payload: " + str(msg))
 
     def onPublish(self, client, userdata, mid):
-        pass
+        logging.info("MQTT message published: " + str(client))
 
     def onSubscribe(self, client, userdata, mid, granted_qos):
-        pass
+        logging.info("MQTT client subscribed: " + str(client))
 
     def onActuatorCommandMessage(self, client, userdata, msg):
         """
