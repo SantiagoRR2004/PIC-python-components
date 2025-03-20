@@ -79,6 +79,8 @@ class MqttClientConnector(IPubSubClient):
         #      a random value (not recommended if setting clean session flag to False)
         if not clientID:
             self.clientID = "constraineddevice" + f"{random.randint(1, 9999):04d}"
+        else:
+            self.clientID = clientID
 
         if not self.clientID:
             raise ValueError("clientID must be set prior to calling connectClient()")
