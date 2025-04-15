@@ -1,6 +1,9 @@
 # Import for formatting
 black
 
+# For parallel testing
+pytest-xdist
+
 # Imports for Chapter 02 and later
 apscheduler
 psutil
