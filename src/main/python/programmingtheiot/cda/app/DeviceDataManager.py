@@ -14,6 +14,7 @@ from programmingtheiot.cda.connection.MqttClientConnector import MqttClientConne
 from programmingtheiot.cda.connection.RedisPersistenceAdapter import (
     RedisPersistenceAdapter,
 )
+from programmingtheiot.cda.connection.CoapClientConnector import CoapClientConnector
 
 from programmingtheiot.cda.system.ActuatorAdapterManager import ActuatorAdapterManager
 from programmingtheiot.cda.system.SensorAdapterManager import SensorAdapterManager
@@ -67,13 +68,17 @@ class DeviceDataManager(IDataMessageListener):
             key=ConfigConst.ENABLE_MQTT_CLIENT_KEY,
         )
 
+        self.enableCoapClient = self.configUtil.getBoolean(
+            section=ConfigConst.CONSTRAINED_DEVICE,
+            key=ConfigConst.ENABLE_COAP_CLIENT_KEY,
+        )
+
         self.sysPerfMgr = None
         self.sensorAdapterMgr = None
         self.actuatorAdapterMgr = None
         self.redisClient = None
 
         self.mqttClient = None
-        # NOTE: The following aren't used until Part III but should be declared now
         self.coapClient = None
         self.coapServer = None
 
@@ -99,6 +104,11 @@ class DeviceDataManager(IDataMessageListener):
             self.mqttClient = MqttClientConnector()
             self.mqttClient.setDataMessageListener(self)
             logging.info("MQTT client connection enabled")
+
+        if self.enableCoapClient:
+            self.coapClient = CoapClientConnector()
+            self.coapClient.setDataMessageListener(self)
+            logging.info("CoAP client connection enabled")
 
         self.handleTempChangeOnDevice = self.configUtil.getBoolean(
             ConfigConst.CONSTRAINED_DEVICE, ConfigConst.HANDLE_TEMP_CHANGE_ON_DEVICE_KEY
