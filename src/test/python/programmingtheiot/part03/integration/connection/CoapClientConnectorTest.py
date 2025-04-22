@@ -96,7 +96,6 @@ class CoapClientConnectorTest(unittest.TestCase):
             timeout=5,
         )
 
-    @unittest.skip("Ignore for now.")
     def testDeleteSensorMessageCon(self):
         """
         Comment the annotation to test CON DELETE
@@ -105,7 +104,6 @@ class CoapClientConnectorTest(unittest.TestCase):
             resource=ResourceNameEnum.CDA_SENSOR_MSG_RESOURCE, enableCON=True, timeout=5
         )
 
-    @unittest.skip("Ignore for now.")
     def testDeleteSensorMessageNon(self):
         """
         Comment the annotation to test NON DELETE
