@@ -68,7 +68,6 @@ class CoapClientConnectorTest(unittest.TestCase):
     def tearDown(self):
         pass
 
-    @unittest.skip("Ignore for now.")
     def testConnectAndDiscover(self):
         """
         Comment the annotation to test Connect and Discover
@@ -77,7 +76,6 @@ class CoapClientConnectorTest(unittest.TestCase):
 
         sleep(5)
 
-    @unittest.skip("Ignore for now.")
     def testGetActuatorCommandCon(self):
         """
         Comment the annotation to test CON GET
@@ -88,7 +86,6 @@ class CoapClientConnectorTest(unittest.TestCase):
             timeout=5,
         )
 
-    @unittest.skip("Ignore for now.")
     def testGetActuatorCommandNon(self):
         """
         Comment the annotation to test CON GET
