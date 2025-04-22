@@ -116,7 +116,6 @@ class CoapClientConnectorTest(unittest.TestCase):
             timeout=5,
         )
 
-    @unittest.skip("Ignore for now.")
     def testPostSensorMessageCon(self):
         """
         Comment the annotation to test CON POST
@@ -131,7 +130,6 @@ class CoapClientConnectorTest(unittest.TestCase):
             timeout=5,
         )
 
-    @unittest.skip("Ignore for now.")
     def testPostSensorMessageNon(self):
         """
         Comment the annotation to test NON POST
