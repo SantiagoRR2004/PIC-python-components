@@ -170,7 +170,6 @@ class CoapClientConnectorTest(unittest.TestCase):
             timeout=5,
         )
 
-    @unittest.skip("Ignore for now.")
     def testActuatorCommandObserve(self):
         """
         Comment the annotation to test Observe
