@@ -41,9 +41,8 @@ class CoapClientPerformanceTest(unittest.TestCase):
         self.coapClient = CoapClientConnector()
 
     def tearDown(self):
-        self.coapClient.disconnectClient()
+        pass
 
-    @unittest.skip("Ignore for now.")
     def testGetRequestCon(self):
         """
         Comment the annotation to perf test CON GET
@@ -52,7 +51,6 @@ class CoapClientPerformanceTest(unittest.TestCase):
 
         self._execTestGet(self.MAX_TEST_RUNS, True)
 
-    @unittest.skip("Ignore for now.")
     def testGetRequestNon(self):
         """
         Comment the annotation to perf test NON GET
@@ -61,7 +59,6 @@ class CoapClientPerformanceTest(unittest.TestCase):
 
         self._execTestGet(self.MAX_TEST_RUNS, False)
 
-    @unittest.skip("Ignore for now.")
     def testPostRequestCon(self):
         """
         Comment the annotation to perf test CON POST
@@ -70,7 +67,6 @@ class CoapClientPerformanceTest(unittest.TestCase):
 
         self._execTestPost(self.MAX_TEST_RUNS, True)
 
-    @unittest.skip("Ignore for now.")
     def testPostRequestNon(self):
         """
         Comment the annotation to perf test NON POST
@@ -79,7 +75,6 @@ class CoapClientPerformanceTest(unittest.TestCase):
 
         self._execTestPost(self.MAX_TEST_RUNS, False)
 
-    @unittest.skip("Ignore for now.")
     def testPutRequestCon(self):
         """
         Comment the annotation to perf test CON PUT
@@ -88,7 +83,6 @@ class CoapClientPerformanceTest(unittest.TestCase):
 
         self._execTestPut(self.MAX_TEST_RUNS, True)
 
-    @unittest.skip("Ignore for now.")
     def testPutRequestNon(self):
         """
         Comment the annotation to perf test NON PUT
