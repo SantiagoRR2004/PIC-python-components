@@ -10,6 +10,7 @@
 import logging
 import random
 import paho.mqtt.client as mqttClient
+import ssl
 
 import programmingtheiot.common.ConfigConst as ConfigConst
 
@@ -67,6 +68,14 @@ class MqttClientConnector(IPubSubClient):
             ConfigConst.DEFAULT_QOS,
         )
 
+        self.enableEncryption = self.config.getBoolean(
+            ConfigConst.MQTT_GATEWAY_SERVICE, ConfigConst.ENABLE_CRYPT_KEY
+        )
+
+        self.pemFileName = self.config.getProperty(
+            ConfigConst.MQTT_GATEWAY_SERVICE, ConfigConst.CERT_FILE_KEY
+        )
+
         self.mqttClient = None
 
         # IMPORTANT:
@@ -103,6 +112,24 @@ class MqttClientConnector(IPubSubClient):
             self.mqttClient = mqttClient.Client(
                 client_id=self.clientID, clean_session=True
             )
+
+            try:
+                if self.enableEncryption:
+                    logging.info("Enabling TLS encryption...")
+
+                    self.port = self.config.getInteger(
+                        ConfigConst.MQTT_GATEWAY_SERVICE,
+                        ConfigConst.SECURE_PORT_KEY,
+                        ConfigConst.DEFAULT_MQTT_SECURE_PORT,
+                    )
+
+                    self.mqttClient.tls_set(
+                        self.pemFileName, tls_version=ssl.PROTOCOL_TLS_CLIENT
+                    )
+            except:
+                logging.warning(
+                    "Failed to enable TLS encryption. Using unencrypted connection."
+                )
 
             self.mqttClient.on_connect = self.onConnect
             self.mqttClient.on_disconnect = self.onDisconnect
