@@ -20,6 +20,8 @@ from programmingtheiot.common.ResourceNameEnum import ResourceNameEnum
 
 from programmingtheiot.cda.connection.IPubSubClient import IPubSubClient
 
+from programmingtheiot.data.DataUtil import DataUtil
+
 
 class MqttClientConnector(IPubSubClient):
     """
@@ -163,7 +165,16 @@ class MqttClientConnector(IPubSubClient):
             return False
 
     def onConnect(self, client, userdata, flags, rc):
-        logging.info("MQTT client connected to broker: " + str(client))
+        logging.info("[Callback] Connected to MQTT broker. Result code: " + str(rc))
+
+        self.mqttClient.subscribe(
+            topic=ResourceNameEnum.CDA_ACTUATOR_CMD_RESOURCE.value, qos=self.defaultQos
+        )
+
+        self.mqttClient.message_callback_add(
+            sub=ResourceNameEnum.CDA_ACTUATOR_CMD_RESOURCE.value,
+            callback=self.onActuatorCommandMessage,
+        )
 
     def onDisconnect(self, client, userdata, rc):
         logging.info("MQTT client disconnected from broker: " + str(client))
@@ -197,7 +208,22 @@ class MqttClientConnector(IPubSubClient):
         @param userdata The user reference context.
         @param msg The message context, including the embedded payload.
         """
-        pass
+        logging.info(
+            "[Callback] Actuator command message received. Topic: %s.", msg.topic
+        )
+
+        if self.dataMsgListener:
+            try:
+                # assumes all data is encoded using UTF-8 (between GDA and CDA)
+                actuatorData = DataUtil().jsonToActuatorData(
+                    msg.payload.decode("utf-8")
+                )
+
+                self.dataMsgListener.handleActuatorCommandMessage(actuatorData)
+            except:
+                logging.exception(
+                    "Failed to convert incoming actuation command payload to ActuatorData: "
+                )
 
     def publishMessage(
         self,
@@ -226,8 +252,10 @@ class MqttClientConnector(IPubSubClient):
 
         # publish message, and wait for publish to complete before returning
         msgInfo = self.mqttClient.publish(topic=resource.value, payload=msg, qos=qos)
-        msgInfo.wait_for_publish()
+        # msgInfo.wait_for_publish()
 
+        # NOTE: The 'True' return no longer guarantees successful publish,
+        # as it will return before the publish may successfully complete
         return True
 
     def subscribeToTopic(
