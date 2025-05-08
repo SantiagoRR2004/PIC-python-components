@@ -257,6 +257,12 @@ class DeviceDataManager(IDataMessageListener):
                 "Incoming system performance message received (from sys perf manager): "
                 + str(data)
             )
+
+            self._handleUpstreamTransmission(
+                resourceName=ResourceNameEnum.CDA_SYSTEM_PERF_MSG_RESOURCE,
+                msg=DataUtil().systemPerformanceDataToJson(data),
+            )
+
             return True
         else:
             logging.warning(
