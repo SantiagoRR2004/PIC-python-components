@@ -229,6 +229,15 @@ class DeviceDataManager(IDataMessageListener):
                     resource=ResourceNameEnum.CDA_SENSOR_MSG_RESOURCE, data=data
                 )
             self._handleSensorDataAnalysis(data)
+
+            # Convert the `SensorData` instance to JSON
+            jsonData = DataUtil().sensorDataToJson(sensorData=data)
+
+            # Pass the resource and newly generated JSON data to `_handleUpstreamTransmission()`
+            self._handleUpstreamTransmission(
+                resourceName=ResourceNameEnum.CDA_SENSOR_MSG_RESOURCE, msg=jsonData
+            )
+
             return True
         else:
             logging.warning("Incoming sensor data is invalid (null). Ignoring.")
@@ -248,6 +257,12 @@ class DeviceDataManager(IDataMessageListener):
                 "Incoming system performance message received (from sys perf manager): "
                 + str(data)
             )
+
+            self._handleUpstreamTransmission(
+                resourceName=ResourceNameEnum.CDA_SYSTEM_PERF_MSG_RESOURCE,
+                msg=DataUtil().systemPerformanceDataToJson(data),
+            )
+
             return True
         else:
             logging.warning(
@@ -361,4 +376,33 @@ class DeviceDataManager(IDataMessageListener):
         1) Check connection: Is there a client connection configured (and valid) to a remote MQTT or CoAP server?
         2) Act on msg: If # 1 is true, send message upstream using one (or both) client connections.
         """
-        pass
+        logging.info("Upstream transmission invoked. Checking comm's integration.")
+
+        # NOTE: If using MQTT, the following will attempt to publish the message to the broker
+        mqtt_success = False
+        if self.mqttClient:
+            mqtt_success = self.mqttClient.publishMessage(
+                resource=resourceName, msg=msg
+            )
+            if mqtt_success:
+                logging.debug(
+                    "Published incoming data to resource (MQTT): %s", str(resourceName)
+                )
+            else:
+                logging.warning(
+                    "Failed to publish incoming data to resource (MQTT): %s",
+                    str(resourceName),
+                )
+
+        # NOTE: If using CoAP, the following will attempt to PUT the message to the server
+        if (not mqtt_success) and self.coapClient:
+            if self.coapClient.sendPutRequest(resource=resourceName, payload=msg):
+                logging.debug(
+                    "Put incoming message data to resource (CoAP): %s",
+                    str(resourceName),
+                )
+            else:
+                logging.warning(
+                    "Failed to put incoming message data to resource (CoAP): %s",
+                    str(resourceName),
+                )

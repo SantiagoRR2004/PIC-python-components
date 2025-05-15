@@ -10,6 +10,7 @@
 import logging
 import random
 import paho.mqtt.client as mqttClient
+import ssl
 
 import programmingtheiot.common.ConfigConst as ConfigConst
 
@@ -18,6 +19,8 @@ from programmingtheiot.common.IDataMessageListener import IDataMessageListener
 from programmingtheiot.common.ResourceNameEnum import ResourceNameEnum
 
 from programmingtheiot.cda.connection.IPubSubClient import IPubSubClient
+
+from programmingtheiot.data.DataUtil import DataUtil
 
 
 class MqttClientConnector(IPubSubClient):
@@ -67,6 +70,14 @@ class MqttClientConnector(IPubSubClient):
             ConfigConst.DEFAULT_QOS,
         )
 
+        self.enableEncryption = self.config.getBoolean(
+            ConfigConst.MQTT_GATEWAY_SERVICE, ConfigConst.ENABLE_CRYPT_KEY
+        )
+
+        self.pemFileName = self.config.getProperty(
+            ConfigConst.MQTT_GATEWAY_SERVICE, ConfigConst.CERT_FILE_KEY
+        )
+
         self.mqttClient = None
 
         # IMPORTANT:
@@ -104,6 +115,24 @@ class MqttClientConnector(IPubSubClient):
                 client_id=self.clientID, clean_session=True
             )
 
+            try:
+                if self.enableEncryption:
+                    logging.info("Enabling TLS encryption...")
+
+                    self.port = self.config.getInteger(
+                        ConfigConst.MQTT_GATEWAY_SERVICE,
+                        ConfigConst.SECURE_PORT_KEY,
+                        ConfigConst.DEFAULT_MQTT_SECURE_PORT,
+                    )
+
+                    self.mqttClient.tls_set(
+                        self.pemFileName, tls_version=ssl.PROTOCOL_TLS_CLIENT
+                    )
+            except:
+                logging.warning(
+                    "Failed to enable TLS encryption. Using unencrypted connection."
+                )
+
             self.mqttClient.on_connect = self.onConnect
             self.mqttClient.on_disconnect = self.onDisconnect
             self.mqttClient.on_message = self.onMessage
@@ -136,7 +165,16 @@ class MqttClientConnector(IPubSubClient):
             return False
 
     def onConnect(self, client, userdata, flags, rc):
-        logging.info("MQTT client connected to broker: " + str(client))
+        logging.info("[Callback] Connected to MQTT broker. Result code: " + str(rc))
+
+        self.mqttClient.subscribe(
+            topic=ResourceNameEnum.CDA_ACTUATOR_CMD_RESOURCE.value, qos=self.defaultQos
+        )
+
+        self.mqttClient.message_callback_add(
+            sub=ResourceNameEnum.CDA_ACTUATOR_CMD_RESOURCE.value,
+            callback=self.onActuatorCommandMessage,
+        )
 
     def onDisconnect(self, client, userdata, rc):
         logging.info("MQTT client disconnected from broker: " + str(client))
@@ -170,7 +208,22 @@ class MqttClientConnector(IPubSubClient):
         @param userdata The user reference context.
         @param msg The message context, including the embedded payload.
         """
-        pass
+        logging.info(
+            "[Callback] Actuator command message received. Topic: %s.", msg.topic
+        )
+
+        if self.dataMsgListener:
+            try:
+                # assumes all data is encoded using UTF-8 (between GDA and CDA)
+                actuatorData = DataUtil().jsonToActuatorData(
+                    msg.payload.decode("utf-8")
+                )
+
+                self.dataMsgListener.handleActuatorCommandMessage(actuatorData)
+            except:
+                logging.exception(
+                    "Failed to convert incoming actuation command payload to ActuatorData: "
+                )
 
     def publishMessage(
         self,
@@ -199,8 +252,10 @@ class MqttClientConnector(IPubSubClient):
 
         # publish message, and wait for publish to complete before returning
         msgInfo = self.mqttClient.publish(topic=resource.value, payload=msg, qos=qos)
-        msgInfo.wait_for_publish()
+        # msgInfo.wait_for_publish()
 
+        # NOTE: The 'True' return no longer guarantees successful publish,
+        # as it will return before the publish may successfully complete
         return True
 
     def subscribeToTopic(

@@ -83,6 +83,9 @@ def main():
     cda = ConstrainedDeviceApp()
     cda.startApp()
 
+    ddMgr = DeviceDataManager()
+    ddMgr.startManager()
+
     runForever = ConfigUtil().getBoolean(
         ConfigConst.CONSTRAINED_DEVICE, ConfigConst.RUN_FOREVER_KEY
     )
