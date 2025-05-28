@@ -155,3 +155,10 @@ class ActuatorAdapterManager(object):
             )
             leClazz = getattr(leDisplayModule, "LedDisplayEmulatorTask")
             self.ledDisplayActuator = leClazz()
+
+            testModule = import_module(
+                "programmingtheiot.cda.emulated.PICTestEmulatorTask",
+                "PICTestActuatorEmulatorTask",
+            )
+            testClazz = getattr(testModule, "PICTestEmulatorTask")
+            self.testActuator = testClazz()
