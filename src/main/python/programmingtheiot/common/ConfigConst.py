@@ -308,7 +308,7 @@ HANDLE_TEMP_CHANGE_ON_DEVICE_KEY = "handleTempChangeOnDevice"
 TRIGGER_HVAC_TEMP_FLOOR_KEY = "triggerHvacTempFloor"
 TRIGGER_HVAC_TEMP_CEILING_KEY = "triggerHvacTempCeiling"
 
-RUN_FOREVER_KEY = "runForever"
+RUN_FOREVER_KEY = "enableRunForever"
 TEST_EMPTY_APP_KEY = "testEmptyApp"
 
 STREAM_HOST_ADDR_KEY = "streamHostAddr"
