@@ -21,6 +21,7 @@ from programmingtheiot.cda.sim.HvacActuatorSimTask import HvacActuatorSimTask
 from programmingtheiot.cda.sim.HumidifierActuatorSimTask import (
     HumidifierActuatorSimTask,
 )
+from programmingtheiot.cda.sim.PICTestActuatorSimTask import PICTestActuatorSimTask
 
 
 class ActuatorAdapterManager(object):
@@ -53,6 +54,7 @@ class ActuatorAdapterManager(object):
 
         self.humidifierActuator = None
         self.hvacActuator = None
+        self.testActuator = None
         self.ledDisplayActuator = None
 
         if self.useEmulator:
@@ -88,6 +90,8 @@ class ActuatorAdapterManager(object):
                     and self.ledDisplayActuator
                 ):
                     responseData = self.ledDisplayActuator.updateActuator(data)
+                elif aType == ConfigConst.TEST_ACTUATOR_TYPE and self.testActuator:
+                    responseData = self.testActuator.updateActuator(data)
                 else:
                     logging.warning(
                         "No valid actuator type. Ignoring actuation for type: %s",
@@ -126,6 +130,9 @@ class ActuatorAdapterManager(object):
             # create the HVAC actuator
             self.hvacActuator = HvacActuatorSimTask()
 
+            # create the test actuator
+            self.testActuator = PICTestActuatorSimTask()
+
         else:
             hueModule = import_module(
                 "programmingtheiot.cda.emulated.HumidifierEmulatorTask",
@@ -148,3 +155,10 @@ class ActuatorAdapterManager(object):
             )
             leClazz = getattr(leDisplayModule, "LedDisplayEmulatorTask")
             self.ledDisplayActuator = leClazz()
+
+            testModule = import_module(
+                "programmingtheiot.cda.emulated.PICTestEmulatorTask",
+                "PICTestActuatorEmulatorTask",
+            )
+            testClazz = getattr(testModule, "PICTestEmulatorTask")
+            self.testActuator = testClazz()

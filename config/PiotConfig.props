@@ -47,6 +47,7 @@ enableSystemPerformance = True
 enableSensing    = True
 enableLogging    = True
 enableRedis     = True
+enableRunForever = True
 pollCycleSecs    = 5
 testGdaDataPath  = /tmp/gda-data
 testCdaDataPath  = /tmp/cda-data
@@ -59,6 +60,8 @@ pressureSimFloor   =  990.0
 pressureSimCeiling = 1010.0
 tempSimFloor       =   15.0
 tempSimCeiling     =   25.0
+gradeSimFloor    =  0.0
+gradeSimCeiling  =  10.0
 
 # configurable limits for actuator triggers
 handleTempChangeOnDevice = True

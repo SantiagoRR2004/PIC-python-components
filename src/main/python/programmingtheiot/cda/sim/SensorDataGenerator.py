@@ -52,6 +52,11 @@ class SensorDataGenerator(object):
     MIN_MONITOR_PRESSURE = DEFAULT_MIN_VALUE
     MAX_MONITOR_PRESSURE = 50000.0
 
+    MIN_GRADE = 0.0
+    LOW_NORMAL_GRADE = 4.0
+    HI_NORMAL_GRADE = 6.0
+    MAX_GRADE = 10.0
+
     DEFAULT_DATA_POINTS = 60 * MAX_HOURS
 
     NO_NOISE = 0
@@ -199,6 +204,31 @@ class SensorDataGenerator(object):
         if maxValue < self.MIN_ENV_TEMP or maxValue > self.MAX_ENV_TEMP:
             maxValue = self.MAX_ENV_TEMP
         if minValue < self.MIN_ENV_TEMP or minValue >= maxValue:
+            minValue = maxValue - 1
+
+        return self.generateDailySensorDataSet(
+            curveType=self.DEFAULT_TEMP_CURVE,
+            noiseLevel=noiseLevel,
+            minValue=minValue,
+            maxValue=maxValue,
+            startHour=0,
+            endHour=24,
+            useSeconds=useSeconds,
+        )
+
+    def generateDailyPICGradeDataSet(
+        self,
+        noiseLevel: int = DEFAULT_NOISE,
+        minValue: float = MIN_MONITOR_TEMP,
+        maxValue: float = MAX_MONITOR_TEMP,
+        useSeconds: bool = False,
+    ):
+        """
+        Generates a time-series data set for PIC grade simulation over a 24-hour period.
+        """
+        if maxValue < self.MIN_GRADE or maxValue > self.MAX_GRADE:
+            maxValue = self.MAX_GRADE
+        if minValue < self.MIN_GRADE or minValue >= maxValue:
             minValue = maxValue - 1
 
         return self.generateDailySensorDataSet(

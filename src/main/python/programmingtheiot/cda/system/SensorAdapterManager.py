@@ -22,6 +22,7 @@ from programmingtheiot.cda.sim.SensorDataGenerator import SensorDataGenerator
 from programmingtheiot.cda.sim.HumiditySensorSimTask import HumiditySensorSimTask
 from programmingtheiot.cda.sim.TemperatureSensorSimTask import TemperatureSensorSimTask
 from programmingtheiot.cda.sim.PressureSensorSimTask import PressureSensorSimTask
+from programmingtheiot.cda.sim.PICGradeSensorSimTask import PICGradeSensorSimTask
 
 
 class SensorAdapterManager(object):
@@ -68,6 +69,7 @@ class SensorAdapterManager(object):
         self.humidityAdapter = None
         self.pressureAdapter = None
         self.tempAdapter = None
+        self.gradeAdapter = None
 
         # see PIOT-CDA-03-006 description for thoughts on the next line of code
         self._initEnvironmentalSensorTasks()
@@ -76,19 +78,23 @@ class SensorAdapterManager(object):
         humidityData = self.humidityAdapter.generateTelemetry()
         pressureData = self.pressureAdapter.generateTelemetry()
         tempData = self.tempAdapter.generateTelemetry()
+        gradeData = self.gradeAdapter.generateTelemetry()
 
         humidityData.setLocationID(self.locationID)
         pressureData.setLocationID(self.locationID)
         tempData.setLocationID(self.locationID)
+        gradeData.setLocationID(self.locationID)
 
         logging.debug("Generated humidity data: " + str(humidityData))
         logging.debug("Generated pressure data: " + str(pressureData))
         logging.debug("Generated temp data: " + str(tempData))
+        logging.debug("Generated grade data: " + str(gradeData))
 
         if self.dataMsgListener:
             self.dataMsgListener.handleSensorMessage(humidityData)
             self.dataMsgListener.handleSensorMessage(pressureData)
             self.dataMsgListener.handleSensorMessage(tempData)
+            self.dataMsgListener.handleSensorMessage(gradeData)
 
     def setDataMessageListener(self, listener: IDataMessageListener) -> bool:
         if listener:
@@ -147,6 +153,17 @@ class SensorAdapterManager(object):
             defaultVal=SensorDataGenerator.HI_NORMAL_INDOOR_TEMP,
         )
 
+        gradeFloor = self.configUtil.getFloat(
+            section=ConfigConst.CONSTRAINED_DEVICE,
+            key=ConfigConst.GRADE_SIM_FLOOR_KEY,
+            defaultVal=SensorDataGenerator.LOW_NORMAL_GRADE,
+        )
+        gradeCeiling = self.configUtil.getFloat(
+            section=ConfigConst.CONSTRAINED_DEVICE,
+            key=ConfigConst.GRADE_SIM_CEILING_KEY,
+            defaultVal=SensorDataGenerator.HI_NORMAL_GRADE,
+        )
+
         if not self.useEmulator:
             self.dataGenerator = SensorDataGenerator()
 
@@ -159,10 +176,14 @@ class SensorAdapterManager(object):
             tempData = self.dataGenerator.generateDailyIndoorTemperatureDataSet(
                 minValue=tempFloor, maxValue=tempCeiling, useSeconds=False
             )
+            gradeData = self.dataGenerator.generateDailyPICGradeDataSet(
+                minValue=gradeFloor, maxValue=gradeCeiling, useSeconds=False
+            )
 
             self.humidityAdapter = HumiditySensorSimTask(dataSet=humidityData)
             self.pressureAdapter = PressureSensorSimTask(dataSet=pressureData)
             self.tempAdapter = TemperatureSensorSimTask(dataSet=tempData)
+            self.gradeAdapter = PICGradeSensorSimTask(dataSet=gradeData)
 
         else:
             heModule = import_module(
@@ -185,3 +206,10 @@ class SensorAdapterManager(object):
             )
             teClazz = getattr(tempModule, "TemperatureSensorEmulatorTask")
             self.tempAdapter = teClazz()
+
+            gradeModule = import_module(
+                "programmingtheiot.cda.emulated.PICGradeSensorEmulatorTask",
+                "PICGradeSensorEmulatorTask",
+            )
+            gradeClazz = getattr(gradeModule, "PICGradeSensorEmulatorTask")
+            self.gradeAdapter = gradeClazz()

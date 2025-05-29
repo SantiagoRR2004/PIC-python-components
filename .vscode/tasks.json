@@ -87,6 +87,24 @@
         "panel": "shared"
       },
       "problemMatcher": []
+    },
+    {
+      "label": "Download TestCreator",
+      "type": "shell",
+      "command": "bash downloadTestCreator.sh",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "reveal": "always",
+        "focus": false,
+        "panel": "new"
+      },
+      "runOptions": {
+        "runOn": "folderOpen" // Run this task when the folder is opened
+      },
+      "problemMatcher": []
     }
   ]
 }
